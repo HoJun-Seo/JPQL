@@ -145,7 +145,10 @@ public class JpaMain {
 			//String query = "select m from Member m left outer join m.team t"; // 외부 조인
 			//String query = "select m from Member m, Team t where m.username = t.name"; // 세타 조인
 			//String query = "select m from Member m left join m.team t on t.name = 'teamA'"; // 조인 대상 필터링
-			String query = "select m from Member m left join Team t on m.username = t.name"; // 연관관계 없는 엔티티 외부 조인
+			//String query = "select m from Member m left join Team t on m.username = t.name"; // 연관관계 없는 엔티티 외부 조인
+			
+			// select 절 에서 서브 쿼리를 사용하는 경우
+			String query = "select (select avg(m1.age) FROM Member m1) as avgAge from Member m join Team t on m.username = t.name";
 			List<Member> result = em.createQuery(query, Member.class)
 					.getResultList();
 
