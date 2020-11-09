@@ -152,6 +152,14 @@ public class JpaMain {
 			List<Member> result = em.createQuery(query, Member.class)
 					.getResultList();
 
+			//현재 JPA 에서는 from 절에서 서브 쿼리를 작성하는 기능을 지원하지 않고 있다.
+			/*
+			String query_from = "select mm.age, mm.username" +
+					"from (select m.age, m.username from Member m) as mm";
+			List<Member> result_from = em.createQuery(query_from, Member.class)
+					.getResultList();
+			 */
+
 			tx.commit();
 		} catch (Exception e){
 			tx.rollback();
