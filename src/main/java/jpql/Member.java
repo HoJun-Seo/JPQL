@@ -15,6 +15,7 @@ public class Member {
 	private Team team;
 
 	//JPQL 타입 표현과 기타식
+	@Enumerated(EnumType.STRING)
 	private MemberType type;
 
 	// 연관관계 편의 메소드
@@ -53,6 +54,14 @@ public class Member {
 
 	public void setTeam(Team team) {
 		this.team = team;
+	}
+
+	public MemberType getType() {
+		return type;
+	}
+
+	public void setType(MemberType type) {
+		this.type = type;
 	}
 
 	@Override

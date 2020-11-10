@@ -134,6 +134,9 @@ public class JpaMain {
 			member.setUsername("teamA");
 			member.setAge(10);
 
+			// JPQL 타입 표현과 기타식
+			member.setType(MemberType.ADMIN);
+
 			member.setTeam(team);
 
 			em.persist(member);
@@ -161,9 +164,21 @@ public class JpaMain {
 			 */
 
 			// JPQL 타입 표현과 기타식
-			String query = "select m.username, 'HELLO', TRUE From Member m";
+			//String query = "select m.username, 'HELLO', TRUE From Member m " +
+			//		"where m.type = jpql.MemberType.ADMIN";
+			//List<Object[]> result = em.createQuery(query)
+			//		.getResultList();
+			String query = "select m.username, 'HELLO', TRUE From Member m " +
+					"where m.type = :userType"; // 파라미터 바인딩
 			List<Object[]> result = em.createQuery(query)
+					.setParameter("userType", MemberType.ADMIN)
 					.getResultList();
+
+			for (Object[] objects : result){
+				System.out.println("objects = " + objects[0]);
+				System.out.println("objects = " + objects[1]);
+				System.out.println("objects = " + objects[2]);
+			}
 
 			tx.commit();
 		} catch (Exception e){
