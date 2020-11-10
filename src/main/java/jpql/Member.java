@@ -14,6 +14,9 @@ public class Member {
 	@JoinColumn(name = "TEAM_ID")
 	private Team team;
 
+	//JPQL 타입 표현과 기타식
+	private MemberType type;
+
 	// 연관관계 편의 메소드
 	public void changeTeam(Team team){
 		this.team = team;

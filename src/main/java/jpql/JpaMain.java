@@ -148,9 +148,9 @@ public class JpaMain {
 			//String query = "select m from Member m left join Team t on m.username = t.name"; // 연관관계 없는 엔티티 외부 조인
 			
 			// select 절 에서 서브 쿼리를 사용하는 경우
-			String query = "select (select avg(m1.age) FROM Member m1) as avgAge from Member m join Team t on m.username = t.name";
-			List<Member> result = em.createQuery(query, Member.class)
-					.getResultList();
+			//String query = "select (select avg(m1.age) FROM Member m1) as avgAge from Member m join Team t on m.username = t.name";
+			//List<Member> result = em.createQuery(query, Member.class)
+			//		.getResultList();
 
 			//현재 JPA 에서는 from 절에서 서브 쿼리를 작성하는 기능을 지원하지 않고 있다.
 			/*
@@ -159,6 +159,11 @@ public class JpaMain {
 			List<Member> result_from = em.createQuery(query_from, Member.class)
 					.getResultList();
 			 */
+
+			// JPQL 타입 표현과 기타식
+			String query = "select m.username, 'HELLO', TRUE From Member m";
+			List<Object[]> result = em.createQuery(query)
+					.getResultList();
 
 			tx.commit();
 		} catch (Exception e){
