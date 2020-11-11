@@ -131,7 +131,9 @@ public class JpaMain {
 			em.persist(team);
 
 			Member member = new Member();
-			member.setUsername("teamA");
+			//member.setUsername("teamA");
+			//member.setUsername(null); // COALESCE 활용
+			member.setUsername("관리자"); // NULLIF 활용
 			member.setAge(10);
 
 			// JPQL 타입 표현과 기타식
@@ -168,6 +170,7 @@ public class JpaMain {
 			//		"where m.type = jpql.MemberType.ADMIN";
 			//List<Object[]> result = em.createQuery(query)
 			//		.getResultList();
+			/*
 			String query = "select m.username, 'HELLO', TRUE From Member m " +
 					"where m.type = :userType"; // 파라미터 바인딩
 			List<Object[]> result = em.createQuery(query)
@@ -178,6 +181,30 @@ public class JpaMain {
 				System.out.println("objects = " + objects[0]);
 				System.out.println("objects = " + objects[1]);
 				System.out.println("objects = " + objects[2]);
+			}
+			 */
+
+			// JPQL 조건식(기본 CASE 식)
+			/*
+			String query = "select " +
+					"case when m.age <= 10 then '학생요금' " +
+					"     when m.age >= 60 then '경로요금' " +
+					"     else '일반요금' " +
+					"end " +
+					"from Member m";
+			 */
+
+			// COALESCE 활용
+			//String query = "select coalesce(m.username, '이름 없는 회원') from Member m";
+			// Member 객체에 삽입된 데이터의 회원 이름 값을 null 로 바꾼 후 실행해보자.
+
+			// NULLIF 활용
+			String query = "select NULLIF(m.username, '관리자') from Member m";
+			// Member 객체에 삽입된 데이터의 회원 이름 값을 '관리자' 로 바꾼 후 실행해보자.
+			List<String> result = em.createQuery(query, String.class)
+					.getResultList();
+			for (String s : result){
+				System.out.println("s = " + s);
 			}
 
 			tx.commit();
