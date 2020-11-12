@@ -126,6 +126,7 @@ public class JpaMain {
 			 */
 
 			// 조인
+
 			Team team = new Team();
 			team.setName("teamA");
 			em.persist(team);
@@ -133,15 +134,22 @@ public class JpaMain {
 			Member member = new Member();
 			//member.setUsername("teamA");
 			//member.setUsername(null); // COALESCE 활용
-			member.setUsername("관리자"); // NULLIF 활용
+			member.setUsername("관리자1"); // NULLIF 활용
 			member.setAge(10);
+			//member.setTeam(team);
 
 			// JPQL 타입 표현과 기타식
-			member.setType(MemberType.ADMIN);
+			//member.setType(MemberType.ADMIN);
 
-			member.setTeam(team);
+			//member.setTeam(team);
 
 			em.persist(member);
+
+			Member member1 = new Member();
+			member1.setUsername("관리자2");
+			member1.setAge(20);
+			em.persist(member1);
+
 
 			em.flush();
 			em.clear();
@@ -199,6 +207,7 @@ public class JpaMain {
 			// Member 객체에 삽입된 데이터의 회원 이름 값을 null 로 바꾼 후 실행해보자.
 
 			// NULLIF 활용
+			/*
 			String query = "select NULLIF(m.username, '관리자') from Member m";
 			// Member 객체에 삽입된 데이터의 회원 이름 값을 '관리자' 로 바꾼 후 실행해보자.
 			List<String> result = em.createQuery(query, String.class)
@@ -206,6 +215,28 @@ public class JpaMain {
 			for (String s : result){
 				System.out.println("s = " + s);
 			}
+			 */
+
+			//String query = "select 'a' || 'b' FROM Member m";
+			//String query = "select concat('a', 'b') FROM Member m"
+			//String query = "select substring(m.username, 2, 3) From Member m";
+			//String query = "select locate('de', 'abcdefg') From Member m";
+			// 결과로 숫자를 반환하는 표준 함수 이기 때문에 List 의 반환값 타입을 Integer 로 설정해야 한다.
+			// String query = "select t.members.size From Team t";
+			/*
+			List<Integer> result = em.createQuery(query, Integer.class)
+					.getResultList();
+			for(Integer s : result){
+				System.out.println("s = " + s);
+			}
+			 */
+			String query = "select function('group_concat', m.username) From Member m";
+			List<String> result = em.createQuery(query, String.class)
+					.getResultList();
+			for (String s : result){
+				System.out.println("s = " + s);
+			}
+
 
 			tx.commit();
 		} catch (Exception e){
