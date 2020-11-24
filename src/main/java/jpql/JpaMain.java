@@ -1,6 +1,7 @@
 package jpql;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.List;
 
 public class JpaMain {
@@ -127,15 +128,20 @@ public class JpaMain {
 
 			// 조인
 
+			/*
 			Team team = new Team();
 			team.setName("teamA");
 			em.persist(team);
+			 */
 
+			/*
 			Member member = new Member();
 			//member.setUsername("teamA");
 			//member.setUsername(null); // COALESCE 활용
 			member.setUsername("관리자1"); // NULLIF 활용
+			member.setTeam(team);
 			member.setAge(10);
+			 */
 			//member.setTeam(team);
 
 			// JPQL 타입 표현과 기타식
@@ -143,16 +149,18 @@ public class JpaMain {
 
 			//member.setTeam(team);
 
-			em.persist(member);
+			//em.persist(member);
 
+			/*
 			Member member1 = new Member();
 			member1.setUsername("관리자2");
 			member1.setAge(20);
+			member1.setTeam(team);
 			em.persist(member1);
+			 */
 
-
-			em.flush();
-			em.clear();
+			//em.flush();
+			//em.clear();
 
 			//String query = "select m from Member m inner join m.team t"; // 내부 조인
 			//String query = "select m from Member m left outer join m.team t"; // 외부 조인
@@ -230,13 +238,65 @@ public class JpaMain {
 				System.out.println("s = " + s);
 			}
 			 */
-			String query = "select function('group_concat', m.username) From Member m";
-			List<String> result = em.createQuery(query, String.class)
-					.getResultList();
-			for (String s : result){
-				System.out.println("s = " + s);
-			}
+			// 사용자 정의 함수
+			// String query = "select function('group_concat', m.username) From Member m";
 
+
+
+			// 경로 탐색 - 상태 필드
+			// String query = "select m.username From Member m";
+
+			// 경로 탐색 - 단일 값 연관 경로(탐색 가능)
+			// String query = "select m.team From Member m";
+			// m.team.name 과 같은 탐색이 가능하다.
+
+			// 경로 탐색 - 컬렉션 값 연관 경로(탐색 불가능)
+			//String query = "select t.members FROM Team t";
+			// 여기서 members 는 Team 클래스에서 Member 클래스와 @OneToMany 연관관계로 선언된 컬렉션이다.
+
+			/*
+			Collection result = em.createQuery(query, Collection.class)
+					.getResultList();
+			for (Object o : result) {
+				System.out.println("o = " + o);
+			}
+			 */
+
+			Team teamA = new Team();
+			teamA.setName("팀A");
+			em.persist(teamA);
+
+			Team teamB = new Team();
+			teamB.setName("팀B");
+			em.persist(teamB);
+
+			Member member1 = new Member();
+			member1.setUsername("회원1");
+			member1.setTeam(teamA);
+			em.persist(member1);
+
+			Member member2 = new Member();
+			member2.setUsername("회원2");
+			member2.setTeam(teamA);
+			em.persist(member2);
+
+			Member member3 = new Member();
+			member3.setUsername("회원3");
+			member3.setTeam(teamB);
+			em.persist(member3);
+
+			em.flush();
+			em.clear();
+
+			//String query = "select m From Member m";
+			String query = "select m from Member m join fetch m.team";
+
+			List<Member> result = em.createQuery(query, Member.class)
+					.getResultList();
+
+			for (Member member : result){
+				System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
+			}
 
 			tx.commit();
 		} catch (Exception e){
