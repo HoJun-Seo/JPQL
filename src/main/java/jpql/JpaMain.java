@@ -289,13 +289,23 @@ public class JpaMain {
 			em.clear();
 
 			//String query = "select m From Member m";
-			String query = "select m from Member m join fetch m.team";
+			// 다대일 관계일 때 페치 조인
+			//String query = "select m from Member m join fetch m.team";
+			// 다대일 관계 페치 조인에서 중복 제거
+			//String query = "select distinct t from Team t join fetch t.members";
+			// 페치 조인과 일반 조인의 차이
+			String query = "select t from Team t join t.members m";
 
-			List<Member> result = em.createQuery(query, Member.class)
+			List<Team> result = em.createQuery(query, Team.class)
 					.getResultList();
 
-			for (Member member : result){
-				System.out.println("member = " + member.getUsername() + ", " + member.getTeam().getName());
+			System.out.println("result = " + result.size());
+
+			for (Team team : result){
+				System.out.println("team = " + team.getName() + "| members = " + team.getMembers().size());
+				for (Member member : team.getMembers()){
+					System.out.println("-> member = " + member);
+				}
 			}
 
 			tx.commit();
