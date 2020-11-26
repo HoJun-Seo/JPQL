@@ -294,9 +294,19 @@ public class JpaMain {
 			// 다대일 관계 페치 조인에서 중복 제거
 			//String query = "select distinct t from Team t join fetch t.members";
 			// 페치 조인과 일반 조인의 차이
-			String query = "select t from Team t join t.members m";
-
+			//String query = "select t from Team t join fetch t.members m";
+			// 페치 조인에서 페이징을 어떻게든 사용해야 할 경우 - 일단 페치 조인 x
+			String query = "select t from Team t";
+			
+			/*
 			List<Team> result = em.createQuery(query, Team.class)
+					.getResultList();
+			 */
+
+			// 페치 조인에서 페이징 API 를 사용하는 경우 문제점
+			List<Team> result = em.createQuery(query, Team.class)
+					.setFirstResult(0)
+					.setMaxResults(2)
 					.getResultList();
 
 			System.out.println("result = " + result.size());
