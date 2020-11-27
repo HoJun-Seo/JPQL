@@ -323,6 +323,7 @@ public class JpaMain {
 
 
 			// JPQL Entity 직접 사용
+			/*
 			String query = "select m from Member m where m.team = :team";
 			List<Member> members = em.createQuery(query, Member.class)
 					.setParameter("team", teamA)
@@ -330,6 +331,15 @@ public class JpaMain {
 
 			for (Member member : members) {
 				System.out.println("findMember = " + members);
+			}
+			 */
+
+			List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
+					.setParameter("username", "회원1")
+					.getResultList();
+
+			for (Member member : resultList) {
+				System.out.println("member = " + member);
 			}
 
 			tx.commit();
