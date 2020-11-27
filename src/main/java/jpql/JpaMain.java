@@ -296,7 +296,7 @@ public class JpaMain {
 			// 페치 조인과 일반 조인의 차이
 			//String query = "select t from Team t join fetch t.members m";
 			// 페치 조인에서 페이징을 어떻게든 사용해야 할 경우 - 일단 페치 조인 x
-			String query = "select t from Team t";
+			//String query = "select t from Team t";
 			
 			/*
 			List<Team> result = em.createQuery(query, Team.class)
@@ -304,10 +304,12 @@ public class JpaMain {
 			 */
 
 			// 페치 조인에서 페이징 API 를 사용하는 경우 문제점
+			/*
 			List<Team> result = em.createQuery(query, Team.class)
 					.setFirstResult(0)
 					.setMaxResults(2)
 					.getResultList();
+
 
 			System.out.println("result = " + result.size());
 
@@ -316,6 +318,18 @@ public class JpaMain {
 				for (Member member : team.getMembers()){
 					System.out.println("-> member = " + member);
 				}
+			}
+			 */
+
+
+			// JPQL Entity 직접 사용
+			String query = "select m from Member m where m.team = :team";
+			List<Member> members = em.createQuery(query, Member.class)
+					.setParameter("team", teamA)
+					.getResultList();
+
+			for (Member member : members) {
+				System.out.println("findMember = " + members);
 			}
 
 			tx.commit();
