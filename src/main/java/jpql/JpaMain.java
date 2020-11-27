@@ -285,8 +285,8 @@ public class JpaMain {
 			member3.setTeam(teamB);
 			em.persist(member3);
 
-			em.flush();
-			em.clear();
+			//em.flush();
+			//em.clear();
 
 			//String query = "select m From Member m";
 			// 다대일 관계일 때 페치 조인
@@ -334,12 +334,36 @@ public class JpaMain {
 			}
 			 */
 
+			/*  Named 쿼리
 			List<Member> resultList = em.createNamedQuery("Member.findByUsername", Member.class)
 					.setParameter("username", "회원1")
 					.getResultList();
 
 			for (Member member : resultList) {
 				System.out.println("member = " + member);
+			}
+			 */
+
+			// JPQL 벌크 연산
+			int resultcount = em.createQuery("update Member m set m.age = 20")
+					.executeUpdate();
+
+			System.out.println("resultcount = " + resultcount);
+
+			em.clear();
+
+			/*
+			System.out.println("member1.getAge() = " + member1.getAge());
+			System.out.println("member2.getAge() = " + member2.getAge());
+			System.out.println("member3.getAge() = " + member3.getAge());
+			 */
+
+			String query = "select m from Member m";
+			List<Member> member_list = em.createQuery(query, Member.class)
+					.getResultList();
+
+			for (Member member : member_list) {
+				System.out.println("member.getAge() = " + member.getAge());
 			}
 
 			tx.commit();
